@@ -1,0 +1,225 @@
+{
+  "repository": "https://github.com/OwaisAbdullah19/defect-demo-repo",
+  "violations": [
+    {
+      "rule_id": "SEC-001",
+      "category": "security",
+      "severity": "critical",
+      "file": ".env",
+      "line": 1,
+      "description": "Committed .env file containing sensitive credentials.",
+      "evidence": ".env contains SECRET_KEY and DB_PASSWORD assignments.",
+      "recommendation": "Remove .env from version control and use environment variables or a secure secrets manager."
+    },
+    {
+      "rule_id": "SEC-002",
+      "category": "security",
+      "severity": "critical",
+      "file": ".github/workflows/pr-bot.yml",
+      "line": 3,
+      "description": "Insecure pull_request_target workflow with PR head checkout and script injection.",
+      "evidence": ".github/workflows/pr-bot.yml uses pull_request_target, checks out PR head sha, and evaluates github.event.pull_request.title in run step.",
+      "recommendation": "Avoid pull_request_target with PR head checkout and pass untrusted event data via environment variables."
+    },
+    {
+      "rule_id": "CI-001",
+      "category": "ci_cd",
+      "severity": "high",
+      "file": ".github/workflows/ci.yml",
+      "line": 4,
+      "description": "CI workflow branch filter mismatches default branch.",
+      "evidence": ".github/workflows/ci.yml triggers on push to develop while default branch is main.",
+      "recommendation": "Configure CI to trigger on push and pull request to main and develop branches."
+    },
+    {
+      "rule_id": "CI-002",
+      "category": "ci_cd",
+      "severity": "high",
+      "file": ".github/workflows/ci.yml",
+      "line": 17,
+      "description": "CI test execution step ignores test failures.",
+      "evidence": ".github/workflows/ci.yml uses continue-on-error: true on pytest run step.",
+      "recommendation": "Remove continue-on-error: true so that test failures correctly fail the CI pipeline."
+    },
+    {
+      "rule_id": "CI-003",
+      "category": "ci_cd",
+      "severity": "high",
+      "file": ".github/workflows/release.yml",
+      "line": 3,
+      "description": "Release workflow publishes to PyPI on push without gating tests or build validation.",
+      "evidence": ".github/workflows/release.yml publishes package on push to main without running tests.",
+      "recommendation": "Gated release workflow with required test and build verification jobs before publishing."
+    },
+    {
+      "rule_id": "SEC-003",
+      "category": "security",
+      "severity": "high",
+      "file": ".github/workflows/ci.yml",
+      "line": 5,
+      "description": "CI workflow grants overly permissive write-all permissions.",
+      "evidence": ".github/workflows/ci.yml sets permissions: write-all.",
+      "recommendation": "Follow principle of least privilege by specifying exact required permissions."
+    },
+    {
+      "rule_id": "SEC-004",
+      "category": "security",
+      "severity": "high",
+      "file": "app/config.py",
+      "line": 5,
+      "description": "Hardcoded API key present in application configuration.",
+      "evidence": "app/config.py contains API_KEY = \"[REDACTED]\".",
+      "recommendation": "Load API keys from environment variables via os.environ."
+    },
+    {
+      "rule_id": "SEC-005",
+      "category": "security",
+      "severity": "high",
+      "file": "app/config.py",
+      "line": 6,
+      "description": "Hardcoded database password in connection string.",
+      "evidence": "app/config.py contains DATABASE_URL with embedded password.",
+      "recommendation": "Load database credentials securely from environment variables."
+    },
+    {
+      "rule_id": "BUILD-001",
+      "category": "build_release",
+      "severity": "medium",
+      "file": "Dockerfile",
+      "line": 1,
+      "description": "Dockerfile uses mutable latest base image tag.",
+      "evidence": "Dockerfile starts with FROM python:latest.",
+      "recommendation": "Pin base image to a specific minor version tag (e.g., python:3.11-slim)."
+    },
+    {
+      "rule_id": "BUILD-002",
+      "category": "build_release",
+      "severity": "medium",
+      "file": "Dockerfile",
+      "line": 1,
+      "description": "Dockerfile runs container as root user without switching to non-root USER.",
+      "evidence": "Dockerfile lacks a USER instruction, causing the application to run as root.",
+      "recommendation": "Add a non-root USER and group for running the application securely."
+    },
+    {
+      "rule_id": "BUILD-003",
+      "category": "build_release",
+      "severity": "medium",
+      "file": "Dockerfile",
+      "line": 4,
+      "description": "Dockerfile installs packages without version pinning.",
+      "evidence": "Dockerfile runs pip install flask requests numpy without version pins.",
+      "recommendation": "Pin package versions in Dockerfile to ensure reproducible builds."
+    },
+    {
+      "rule_id": "QUAL-001",
+      "category": "code_quality",
+      "severity": "medium",
+      "file": "app/main.py",
+      "line": 11,
+      "description": "Bare except clause catches all exceptions indiscriminately.",
+      "evidence": "app/main.py contains except: without exception type specification.",
+      "recommendation": "Catch specific exceptions (e.g. FileNotFoundError, JSONDecodeError) instead of a bare except."
+    },
+    {
+      "rule_id": "QUAL-002",
+      "category": "code_quality",
+      "severity": "medium",
+      "file": "pyproject.toml",
+      "line": 1,
+      "description": "No linter or formatter configured anywhere in the repository.",
+      "evidence": "Repository contains no configuration or CI steps for linters or formatters (e.g., ruff, flake8, black).",
+      "recommendation": "Configure a linter and formatter such as ruff or flake8/black for code quality enforcement."
+    },
+    {
+      "rule_id": "CFG-001",
+      "category": "configuration",
+      "severity": "medium",
+      "file": "app/config.py",
+      "line": 4,
+      "description": "Hardcoded debug flag enabled in configuration.",
+      "evidence": "app/config.py contains DEBUG = True.",
+      "recommendation": "Default DEBUG to False and control via environment variables."
+    },
+    {
+      "rule_id": "CFG-002",
+      "category": "configuration",
+      "severity": "medium",
+      "file": "app/config.py",
+      "line": 7,
+      "description": "Machine-specific absolute path hardcoded in configuration.",
+      "evidence": "app/config.py contains DATA_DIR = \"/home/alice/projects/demo/data\".",
+      "recommendation": "Use relative paths or environment variables for data directories."
+    },
+    {
+      "rule_id": "DEP-001",
+      "category": "dependency_management",
+      "severity": "medium",
+      "file": "pyproject.toml",
+      "line": 1,
+      "description": "Conflicting dependency specifications across manifests and missing lockfile.",
+      "evidence": "pyproject.toml and requirements.txt specify conflicting/differing dependency constraints without an application lockfile.",
+      "recommendation": "Consolidate dependency manifests and generate an application lockfile."
+    },
+    {
+      "rule_id": "TEST-001",
+      "category": "testing",
+      "severity": "medium",
+      "file": "tests/test_main.py",
+      "line": 8,
+      "description": "Empty test body in test function.",
+      "evidence": "tests/test_main.py contains test_load_items_missing_file with pass body.",
+      "recommendation": "Implement proper test assertions for missing file handling."
+    },
+    {
+      "rule_id": "QUAL-003",
+      "category": "code_quality",
+      "severity": "low",
+      "file": "app/main.py",
+      "line": 2,
+      "description": "Wildcard import used in Python source file.",
+      "evidence": "app/main.py contains from os.path import *.",
+      "recommendation": "Import specific functions explicitly instead of using wildcard imports."
+    },
+    {
+      "rule_id": "REPO-001",
+      "category": "repository_hygiene",
+      "severity": "low",
+      "file": null,
+      "line": null,
+      "description": "Missing repository README file.",
+      "evidence": "No README file found at any path in the repository.",
+      "recommendation": "Add a comprehensive README.md describing the project, installation, and usage."
+    },
+    {
+      "rule_id": "REPO-002",
+      "category": "repository_hygiene",
+      "severity": "low",
+      "file": ".idea/workspace.xml",
+      "line": 1,
+      "description": "Tracked local IDE settings file in repository.",
+      "evidence": ".idea/workspace.xml is tracked in version control.",
+      "recommendation": "Add .idea/ to .gitignore and remove from tracking."
+    },
+    {
+      "rule_id": "REPO-003",
+      "category": "repository_hygiene",
+      "severity": "low",
+      "file": "__pycache__/main.cpython-312.pyc",
+      "line": 1,
+      "description": "Tracked bytecode cache file in repository.",
+      "evidence": "__pycache__/main.cpython-312.pyc is tracked in version control.",
+      "recommendation": "Add __pycache__/ to .gitignore and remove compiled Python files from tracking."
+    },
+    {
+      "rule_id": "REPO-004",
+      "category": "repository_hygiene",
+      "severity": "low",
+      "file": "debug.log",
+      "line": 1,
+      "description": "Tracked log file in repository.",
+      "evidence": "debug.log is tracked in version control.",
+      "recommendation": "Add *.log to .gitignore and remove debug.log from tracking."
+    }
+  ]
+}
